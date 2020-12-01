@@ -2,13 +2,26 @@ package main
 
 import "testing"
 
-func TestPrintHelloWordMessage(t *testing.T) {
-	outputExpected := "hello world!"
-
-	actual := printHelloWordMessage()
-
+func TestValidateIngredientsParams(t *testing.T) {
 	
-	if actual != outputExpected {
-		t.Errorf("Expected output to be %s, but got %s", outputExpected, actual)
+	// test if response is good
+	callbackExpected := true
+	ingredientsInput := []string{"batata,arroz,tomate"}
+	okInput := true
+	callback, _ := validateIngredientsParams(ingredientsInput, okInput)
+	
+	if callback != callbackExpected {
+		t.Errorf("Expected callback to be %v, but got %v", callbackExpected, callback)
 	}
+
+	// test if response is bad
+	callbackExpected = false
+	ingredientsInput = []string{"batata,arroz,tomate,abobora"}
+	okInput = true
+	callback, _ = validateIngredientsParams(ingredientsInput, okInput)
+	
+	if callback != callbackExpected {
+		t.Errorf("Expected callback to be %v, but got %v", callbackExpected, callback)
+	}
+
 }
