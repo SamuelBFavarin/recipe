@@ -2,12 +2,13 @@
 package main
 
 import (
-    "fmt"
-	"log"
-	"strings"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"net/url"		
+	"sort"
+	"strings"
 )
 
 // RECIPE STRUCT
@@ -32,8 +33,25 @@ type RecipePuppyItemResponse struct {
 }
 
 type RecipePuppyResponse struct {
-	Results	[]RecipePuppyItemResponse
+	Results		[]RecipePuppyItemResponse
 } 
+
+// GIFY RESPONSE STRUCT
+type GifyResponse struct {
+	Data		[]GifyImagesResponse
+}
+
+type GifyImagesResponse struct {
+	Images		GifyOriginalResponse		
+}
+
+type GifyOriginalResponse struct {
+	Original	Gif		
+}
+
+type Gif struct {
+	Url			string
+}
 
 
 func main() {
@@ -77,11 +95,8 @@ func callPuppyAPI(ingredients string) (RecipePuppyResponse, bool, string ) {
 		return recipePuppyResponse, false, "The RecipePuppy service are not working"
 	}
 
-	data, _ := ioutil.ReadAll( response.Body )
-	response.Body.Close()
-
 	// CONVERT THE RESPONSE DATA TO A JSON STRUCT
-	err = json.Unmarshal(data, &recipePuppyResponse)
+	err = json.NewDecoder(response.Body).Decode(&recipePuppyResponse)
 	if err != nil {
 		log.Fatal(err)
 		return recipePuppyResponse, false, "Some wrong with the response RecipePuppy decode"
@@ -92,17 +107,59 @@ func callPuppyAPI(ingredients string) (RecipePuppyResponse, bool, string ) {
 
 }
 
+func callGifyAPI(search_word string) (GifyResponse, bool, string) {
+	
+	var gify_response GifyResponse
+
+	gify_api_key := "Vkq266MEDGzUYkMrufXHizf5sHxUPPvd"
+	gify_url := "https://api.giphy.com/v1/gifs/search"
+	
+	base, err := url.Parse(gify_url)
+    if err != nil {
+        return gify_response, false, "Some wrong happens"
+    }    
+	
+	params := url.Values{}		
+	params.Add("api_key", gify_api_key)
+	params.Add("q", search_word)
+	params.Add("limit", "1")
+	params.Add("offset", "0")
+	params.Add("rating", "r")
+	params.Add("lang", "en")
+    base.RawQuery = params.Encode() 
+
+
+	response, err := http.Get(base.String())
+	if err != nil {
+		log.Fatal(err)
+		return gify_response, false, "The Gify service are not working"
+	}
+	
+	err = json.NewDecoder(response.Body).Decode(&gify_response)
+	if err != nil {
+		log.Fatal(err)
+		return gify_response, false, "Some wrong with the response RecipePuppy decode"
+	}	
+
+	return gify_response, true, "every things is fine"
+}
+
 func buildResponseAPI(keywords string, puppy_response RecipePuppyResponse, gify_response string ) RecipeResponse {
 
 	var recipes []Recipe
 
 	for _, recipe := range puppy_response.Results {
 		
+		gif, _, _ := callGifyAPI(recipe.Title)
+
+		ingredients := splitStringByComma(recipe.Ingredients)
+		sort.Strings(ingredients)
+
 		recipe_response := Recipe{
 			Title : recipe.Title,
-			Ingredients : splitStringByComma(recipe.Ingredients),
+			Ingredients : ingredients,
 			Link : recipe.Href,
-			Gif : recipe.Thumbnail}
+			Gif : gif.Data[0].Images.Original.Url}
 
 		recipes = append(recipes, recipe_response)				
 	}
