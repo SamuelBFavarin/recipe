@@ -15,6 +15,14 @@ func main() {
 
 func hello(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusOK)
-    w.Header().Set("Content-Type", "application/json")
-    w.Write([]byte(`{"message":"hello world!"}`))
+	w.Header().Set("Content-Type", "application/json")
+	
+	message := printHelloWordMessage()
+	fmt.Println(message)
+    w.Write([]byte(`{"message":"` + message + `"}`))
+}
+
+
+func printHelloWordMessage() string {
+	return "hello world!"
 }
