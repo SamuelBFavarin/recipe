@@ -5,7 +5,6 @@ import (
 	"sort"
 )
 
-// RECIPE STRUCT
 type RecipeResponse struct {
 	Keywords []string
 	Recipes  []Recipe

@@ -43,10 +43,8 @@ func getRecipesValidateParams(ingredients []string, ok bool) (bool, string) {
 		return false, message
 	}
 
-	// split the query string by comma
-	ingredientsList := SplitStringByComma(ingredients[0])
-
 	// validate the ingredients length
+	ingredientsList := SplitStringByComma(ingredients[0])
 	if len(ingredientsList) > 3 {
 		message := "You can not send more than 3 ingredients"
 		return false, message

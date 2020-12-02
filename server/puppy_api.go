@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 )
 
 type RecipePuppyItemResponse struct {
@@ -22,23 +23,29 @@ func CallPuppyAPI(ingredients string) (RecipePuppyResponse, bool, string) {
 
 	var recipePuppyResponse RecipePuppyResponse
 
-	// DO THE REQUEST
-	puppyURL := "http://www.recipepuppy.com/api/?i=" + ingredients
-	response, err := http.Get(puppyURL)
+	puppyURL := "http://www.recipepuppy.com/api/"
+	base, err := url.Parse(puppyURL)
+	if err != nil {
+		return recipePuppyResponse, false, "Some wrong happens"
+	}
+
+	params := url.Values{}
+	params.Add("i", ingredients)
+	base.RawQuery = params.Encode()
+
+	response, err := http.Get(base.String())
 
 	if err != nil {
 		log.Fatal(err)
 		return recipePuppyResponse, false, "The RecipePuppy service are not working"
 	}
 
-	// CONVERT THE RESPONSE DATA TO A JSON STRUCT
 	err = json.NewDecoder(response.Body).Decode(&recipePuppyResponse)
 	if err != nil {
 		log.Fatal(err)
 		return recipePuppyResponse, false, "Some wrong with the response RecipePuppy decode"
 	}
 
-	// RETURN DATA
 	return recipePuppyResponse, true, "every things is fine"
 
 }
