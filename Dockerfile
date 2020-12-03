@@ -1,10 +1,15 @@
-FROM golang:1.15-alpine AS GO_BUILD
-COPY . /server
-WORKDIR /server/server
-RUN go build -o /go/bin/server/server
+FROM golang
 
-FROM alpine:3.10
-WORKDIR app
-COPY --from=GO_BUILD /go/bin/server/ ./
-EXPOSE 8080
-CMD ./server
+COPY ./source/utils /go/src/github.com/SamuelBFavarin/recipe/source/utils
+COPY ./source/api /go/src/github.com/SamuelBFavarin/recipe/source/api
+COPY ./source/config /go/src/github.com/SamuelBFavarin/recipe/source/config
+COPY ./source/entity /go/src/github.com/SamuelBFavarin/recipe/source/entity
+
+
+WORKDIR /go/src/app
+COPY ./source/main.go .
+
+RUN go get -d -v ./...
+RUN go install -v ./...
+
+CMD ["app"]

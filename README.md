@@ -8,6 +8,6 @@ go run main.go utils.go puppy_api.go gify_api.go config.go recipe.go
 go test .
 
 ### How to build and run the Dockerfile?
-docker build -t api .
-docker run -it -p 8080:8080 api
+docker build -t api2 .
+docker run -it -p 8080:8080 api2
 

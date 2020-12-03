@@ -1,8 +1,11 @@
-package main
+package entity
 
 import (
 	"encoding/json"
 	"sort"
+	api "github.com/SamuelBFavarin/recipe/source/api"
+	utils "github.com/SamuelBFavarin/recipe/source/utils"
+
 )
 
 type RecipeResponse struct {
@@ -19,22 +22,22 @@ type Recipe struct {
 
 // GenerateRecipes used when /recipes endpoit is called. Require a "i" querystring
 func GenerateRecipes(ingredients string) []byte {
-	response, _, _ := CallPuppyAPI(ingredients)
+	response, _, _ := api.CallPuppyAPI(ingredients)
 	result := buildResponseAPI(ingredients, response)
 	resp, _ := json.Marshal(result)
 	return resp
 
 }
 
-func buildResponseAPI(keywords string, puppyResponse RecipePuppyResponse) RecipeResponse {
+func buildResponseAPI(keywords string, puppyResponse api.RecipePuppyResponse) RecipeResponse {
 
 	var recipes []Recipe
 
 	for _, recipe := range puppyResponse.Results {
 
-		gif, _, _ := CallGifyAPI(recipe.Title)
+		gif, _, _ := api.CallGifyAPI(recipe.Title)
 
-		ingredients := SplitStringByComma(recipe.Ingredients)
+		ingredients := utils.SplitStringByComma(recipe.Ingredients)
 		sort.Strings(ingredients)
 
 		recipeResponse := Recipe{
@@ -47,7 +50,7 @@ func buildResponseAPI(keywords string, puppyResponse RecipePuppyResponse) Recipe
 	}
 
 	return RecipeResponse{
-		Keywords: SplitStringByComma(keywords),
+		Keywords: utils.SplitStringByComma(keywords),
 		Recipes:  recipes}
 
 }
