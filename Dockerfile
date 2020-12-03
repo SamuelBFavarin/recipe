@@ -1,5 +1,7 @@
 FROM golang
 
+ENV GO111MODULE=off
+
 COPY ./source/utils /go/src/github.com/SamuelBFavarin/recipe/source/utils
 COPY ./source/api /go/src/github.com/SamuelBFavarin/recipe/source/api
 COPY ./source/config /go/src/github.com/SamuelBFavarin/recipe/source/config
