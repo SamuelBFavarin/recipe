@@ -24,18 +24,18 @@ func endpoints() {
 
 func getRecipes(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 
 	ingredients, ok := r.URL.Query()["i"]
 
 	validateStatus, message := getRecipesValidateParams(ingredients, ok)
 
-	if validateStatus == false {
+	if validateStatus == false {		
 		w.Write([]byte(`{"message":"` + message + `"}`))
 		return
 	}
 
-	resp := entity.GenerateRecipes(ingredients[0])
-	w.Header().Set("Content-Type", "application/json")
+	resp := entity.GenerateRecipes(ingredients[0])	
 	w.Write(resp)
 
 }

@@ -34,7 +34,7 @@ func CallGifyAPI(searchword string) (GifyResponse, bool, string) {
 
 	base, err := url.Parse(gifyURL)
 	if err != nil {
-		return gifyResponse, false, "Some wrong happens"
+		return gifyResponse, false, "Some wrong happens on running Gify service"
 	}
 
 	params := url.Values{}

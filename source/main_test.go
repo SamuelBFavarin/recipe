@@ -4,37 +4,24 @@ import "testing"
 
 func TestValidateIngredientsParams(t *testing.T) {
 
-	// test if response is good
 	callbackExpected := true
 	ingredientsInput := []string{"batata,arroz,tomate"}
-	okInput := true
-	callback, _ := validateIngredientsParams(ingredientsInput, okInput)
-
-	if callback != callbackExpected {
-		t.Errorf("Expected callback to be %v, but got %v", callbackExpected, callback)
-	}
-
-	// test if response is bad
+	callValidateIngredientsParams(ingredientsInput, callbackExpected, t)
+	
 	callbackExpected = false
 	ingredientsInput = []string{"batata,arroz,tomate,abobora"}
-	okInput = true
-	callback, _ = validateIngredientsParams(ingredientsInput, okInput)
+	callValidateIngredientsParams(ingredientsInput, callbackExpected, t)
 
+	callbackExpected = false
+	ingredientsInput = []string{""}
+	callValidateIngredientsParams(ingredientsInput, callbackExpected, t)
+
+}
+
+func callValidateIngredientsParams(ingredientsInput []string, callbackExpected bool, t *testing.T) {
+	callback, _ := getRecipesValidateParams(ingredientsInput, true)
 	if callback != callbackExpected {
 		t.Errorf("Expected callback to be %v, but got %v", callbackExpected, callback)
 	}
-
 }
 
-func TestCallPuppyAPI(t *testing.T) {
-
-	// test if response is good
-	callbackExpected := true
-	ingredientsInput := "batata,arroz,tomate"
-	_, status, _ := CallPuppyAPI(ingredientsInput)
-
-	if status != callbackExpected {
-		t.Errorf("Expected callback to be %v, but got %v", callbackExpected, status)
-	}
-
-}

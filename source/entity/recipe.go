@@ -26,7 +26,6 @@ func GenerateRecipes(ingredients string) []byte {
 	result := buildResponseAPI(ingredients, response)
 	resp, _ := json.Marshal(result)
 	return resp
-
 }
 
 func buildResponseAPI(keywords string, puppyResponse api.RecipePuppyResponse) RecipeResponse {

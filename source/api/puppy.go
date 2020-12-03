@@ -26,7 +26,7 @@ func CallPuppyAPI(ingredients string) (RecipePuppyResponse, bool, string) {
 	puppyURL := "http://www.recipepuppy.com/api/"
 	base, err := url.Parse(puppyURL)
 	if err != nil {
-		return recipePuppyResponse, false, "Some wrong happens"
+		return recipePuppyResponse, false, "Some wrong happens on running RecipePuppy service"
 	}
 
 	params := url.Values{}
