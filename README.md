@@ -70,11 +70,13 @@ For you to run this project without docker, you need to have the golang installe
 
     GO111MODULE=off
 
-Run the tests
-
-    go test ./...
+    
 
 After, you just should to go to `./source` path and run this command
 
+    # run the tests
+    go test ./...
+    
+    # run the project
     go run main.go
 
